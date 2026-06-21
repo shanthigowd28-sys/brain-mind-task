@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: brainmindtask-deployment
-  labels:
-    app: brainmindtask
 spec:
   replicas: 1
   selector:
@@ -17,7 +15,5 @@ spec:
       containers:
       - name: brainmindtask
         image: 048069023324.dkr.ecr.ap-south-1.amazonaws.com/brain-task:latest
-        imagePullPolicy: Always
         ports:
-        - containerPort: 3000
-        
+        - containerPort: 80
