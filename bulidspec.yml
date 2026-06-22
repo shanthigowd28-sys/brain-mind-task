@@ -2,27 +2,24 @@ version: 0.2
 
 env:
 variables:
-AWS_DEFAULT_REGION: "ap-south-1"
-ECR_REPOSITORY_NAME: "brain-task"
-ECR_REPOSITORY_URI: "048069023324.dkr.ecr.ap-south-1.amazonaws.com/brain-task"
-CLUSTER_NAME: "brainmind-cluster"
+AWS_DEFAULT_REGION: ap-south-1
+ECR_REPOSITORY_NAME: brain-task
+ECR_REPOSITORY_URI: 048069023324.dkr.ecr.ap-south-1.amazonaws.com/brain-task
+CLUSTER_NAME: brainmind-cluster
 
 phases:
 pre_build:
 commands:
-- echo Logging in to Amazon ECR
 - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin 048069023324.dkr.ecr.ap-south-1.amazonaws.com
 
 build:
 commands:
-- echo Build started
-- docker build -t $ECR_REPOSITORY_NAME .
-- docker tag $ECR_REPOSITORY_NAME:latest $ECR_REPOSITORY_URI:latest
+- docker build -t brain-task .
+- docker tag brain-task:latest 048069023324.dkr.ecr.ap-south-1.amazonaws.com/brain-task:latest
 
 post_build:
 commands:
-- echo Pushing image to ECR
-- docker push $ECR_REPOSITORY_URI:latest
+- docker push 048069023324.dkr.ecr.ap-south-1.amazonaws.com/brain-task:latest
 
 ```
   - aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name $CLUSTER_NAME
@@ -30,12 +27,5 @@ commands:
   - kubectl apply -f deployment.yaml
   - kubectl apply -f service.yaml
 
-  - kubectl set image deployment/brainmindtask-deployment \
-      brainmindtask=$ECR_REPOSITORY_URI:latest
-
-  - kubectl rollout status deployment/brainmindtask-deployment
+  - kubectl rollout restart deployment/brainmindtask-deployment
 ```
-
-artifacts:
-files:
-- '**/*'
